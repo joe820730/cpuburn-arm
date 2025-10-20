@@ -54,7 +54,7 @@ main:
         stp         x29, x30, [sp, #-16]!
 
 #ifdef __linux__
-        mov         w0, #84 /* _SC_NPROCESSORS_ONLN */
+        mov         w0, #97 /* _SC_NPROCESSORS_ONLN */
         bl          sysconf
         mov         w29, w0
         cmp         w29, #2
