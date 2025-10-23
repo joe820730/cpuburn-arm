@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 extern void stress();
 
@@ -8,18 +9,19 @@ int main(int argc, char *argv[]) {
 	int exit_status;
 	int ncpus = sysconf(_SC_NPROCESSORS_ONLN);
 	int nproc = 1;
-	printf("=== ARM NEON Stress test ===\n");
+	printf("[INFO]\t=== ARM NEON Stress test ===\n");
 
 	if (argc == 1) {
-		printf("Number of processes not specified. Using number of online processors (%d).\n", ncpus);
+		printf("[INFO]\tNumber of processes not specified. Using number of online processors (%d).\n", ncpus);
+		printf("[INFO]\tYou can specify the number of processes with:\n%s [num_processes]\n\n\n", argv[0]);
 		nproc = ncpus;
 	} else {
 		int tmp = atoi(argv[1]);
 		if (tmp > ncpus) {
-			printf("WARN: Specified number of processes (%d) exceeds number of online processors (%d), limits to online processors.\n", tmp, ncpus);
+			printf("[WARN]\tSpecified number of processes (%d) exceeds number of online processors (%d), limits to online processors.\n", tmp, ncpus);
 			nproc = ncpus;
 		} else if (tmp < 1) {
-			printf("WARN: Specified number of processes (%d) is less than 1, limits to 1.\n", tmp);
+			printf("[WARN]\tSpecified number of processes (%d) is less than 1, limits to 1.\n", tmp);
 			nproc = 1;
 		} else {
 			nproc = tmp;
@@ -27,11 +29,11 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (nproc == -1) {
-		fprintf(stderr, "Failed to get number of online processors.\n");
+		fprintf(stderr, "[ERROR]\tFailed to get number of online processors.\n");
 		exit(EXIT_FAILURE);
 	}
 
-	printf("Starting %d processes...\n", nproc);
+	printf("[INFO]\tStarting %d processes...\n", nproc);
 	if (nproc < 2) {
 		goto end;
 	}
@@ -50,7 +52,7 @@ int main(int argc, char *argv[]) {
 	}
 
 end:
-	printf("Process PID: %d\n", getpid());
+	printf("[INFO]\tProcess PID: %d\n", getpid());
 	stress();
 	return 0;
 }
